@@ -42,11 +42,11 @@ def _generate_media_url(class_instance, class_attibute_name, default_image=False
         else:
             return class_attribute
 
-"""
+
 class GenereEnum(enum.Enum):
     male = "M"
     female = "F"
-"""
+
 
 class UserToken(SQLAlchemyBase):
     __tablename__ = "users_tokens"
@@ -61,15 +61,15 @@ class User(SQLAlchemyBase, JSONModel):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
-    #created_at = Column(DateTime, default=datetime.datetime.now, nullable=False)
+    created_at = Column(DateTime, default=datetime.datetime.now, nullable=False)
     username = Column(Unicode(50), nullable=False, unique=True)
     password = Column(UnicodeText, nullable=False)
     email = Column(Unicode(255), nullable=False)
     tokens = relationship("UserToken", back_populates="user", cascade="all, delete-orphan")
     name = Column(Unicode(50), nullable=False)
     surname = Column(Unicode(50), nullable=False)
-    #birthdate = Column(Date)
-    genere = Column(Unicode(50), nullable=False)
+    birthdate = Column(Date)
+    genere = Column(Enum(GenereEnum), nullable=False)
     phone = Column(Unicode(50))
     photo = Column(Unicode(255))
     zone = Column(Unicode(50), nullable=False)
@@ -77,7 +77,7 @@ class User(SQLAlchemyBase, JSONModel):
     @hybrid_property
     def public_profile(self):
         return {
-            #"created_at": self.created_at.strftime(settings.DATETIME_DEFAULT_FORMAT),
+            "created_at": self.created_at.strftime(settings.DATETIME_DEFAULT_FORMAT),
             "username": self.username,
             "name":self.name,
             "surname":self.surname,
@@ -105,19 +105,20 @@ class User(SQLAlchemyBase, JSONModel):
     @hybrid_property
     def json_model(self):
         return {
-            #"created_at": self.created_at.strftime(settings.DATETIME_DEFAULT_FORMAT),
+            "created_at": self.created_at.strftime(settings.DATETIME_DEFAULT_FORMAT),
             "username": self.username,
             "email": self.email,
             "name": self.name,
             "surname": self.surname,
-            #"birthdate": self.birthdate.strftime(
-             #   settings.DATE_DEFAULT_FORMAT) if self.birthdate is not None else self.birthdate,
-            "genere": self.genere,
+            "birthdate": self.birthdate.strftime(
+                settings.DATE_DEFAULT_FORMAT) if self.birthdate is not None else self.birthdate,
+            "genere": self.genere.value,
             "phone": self.phone,
             "photo": self.photo,
             "zone":self.zone,
         }
 
+# Aquestes relacions millor discutir al Sprint IV, pel III no calen...
 #Professors
 class Profesors(SQLAlchemyBase, JSONModel):
     __tablename__ = "user-profesor"

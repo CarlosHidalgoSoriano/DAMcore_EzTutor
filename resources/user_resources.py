@@ -51,6 +51,7 @@ class ResourceRegisterUser(DAMCoreResource):
             aux_user.email = req.media["email"]
             aux_user.name = req.media["name"]
             aux_user.surname = req.media["surname"]
+            aux_user.zone=""
             aux_user.genere = aux_genere
 
             self.db_session.add(aux_user)
