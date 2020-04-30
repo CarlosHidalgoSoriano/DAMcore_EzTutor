@@ -7,8 +7,11 @@ import logging
 import falcon
 from falcon.media.validators import jsonschema
 
+from datetime import datetime
+import calendar
+
 import messages
-from db.models import User, UserToken
+from db.models import User, UserToken, GenreEnum
 from hooks import requires_auth
 from resources.base_resources import DAMCoreResource
 from resources.schemas import SchemaUserToken
@@ -81,4 +84,37 @@ class ResourceAccountUserProfile(DAMCoreResource):
         current_user = req.context["auth_user"]
 
         resp.media = current_user.json_model
+        resp.status = falcon.HTTP_200
+
+@falcon.before(requires_auth)
+class ResourceAccountUpdateUserProfile(DAMCoreResource):
+    def on_post(self, req, resp, *args, **kwargs):
+        super(ResourceAccountUpdateUserProfile, self).on_post(req, resp, *args, **kwargs)
+
+        current_user = req.context["auth_user"]
+
+        if req.media["name"] is not None:
+            current_user.name = req.media["name"]
+        if req.media["surname"] is not None:
+            current_user.surname = req.media["surname"]
+        if req.media["zone"] is not None:
+            current_user.expirience = req.media["zone"]
+        if req.media["phone"] is not None:
+            current_user.description = req.media["phone"]
+        if req.media["email"] is not None:
+            current_user.expirience = req.media["email"]
+        if req.media["photo"] is not None:
+            current_user.expirience = req.media["photo"]
+
+
+        if req.media["gender"] is not None:
+            aux_gender = req.media["gender"]
+            if aux_gender == "MALE":
+                current_user.genere = GenreEnum.male
+            elif aux_gender == "FEMALE":
+                current_user.genere = GenreEnum.female
+
+        self.db_session.add(current_user)
+        self.db_session.commit()
+
         resp.status = falcon.HTTP_200
