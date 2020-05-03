@@ -11,7 +11,7 @@ from datetime import datetime
 import calendar
 
 import messages
-from db.models import User, UserToken, GenreEnum
+from db.models import User, UserToken, GenereEnum
 from hooks import requires_auth
 from resources.base_resources import DAMCoreResource
 from resources.schemas import SchemaUserToken
@@ -93,6 +93,7 @@ class ResourceAccountUpdateUserProfile(DAMCoreResource):
 
         current_user = req.context["auth_user"]
 
+        # @JordiMateoUdL: Control d'errors!
         if req.media["name"] is not None:
             current_user.name = req.media["name"]
         if req.media["surname"] is not None:
@@ -106,13 +107,13 @@ class ResourceAccountUpdateUserProfile(DAMCoreResource):
         if req.media["photo"] is not None:
             current_user.expirience = req.media["photo"]
 
-
+        # @JordiMateoUdL: Si pasem male fallara o MaLE i no hauría
         if req.media["gender"] is not None:
             aux_gender = req.media["gender"]
             if aux_gender == "MALE":
-                current_user.genere = GenreEnum.male
+                current_user.genere = GenereEnum.male
             elif aux_gender == "FEMALE":
-                current_user.genere = GenreEnum.female
+                current_user.genere = GenereEnum.female
 
         self.db_session.add(current_user)
         self.db_session.commit()

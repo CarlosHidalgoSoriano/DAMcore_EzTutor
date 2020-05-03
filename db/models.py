@@ -56,7 +56,7 @@ class UserToken(SQLAlchemyBase):
     user_id = Column(Integer, ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
     user = relationship("User", back_populates="tokens")
 
-
+# @JordiMateoUdl -> Heu tret la data de naixament, aqui també!!!
 class User(SQLAlchemyBase, JSONModel):
     __tablename__ = "users"
 
