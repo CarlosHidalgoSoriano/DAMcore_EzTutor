@@ -12,7 +12,7 @@ from urllib.parse import urljoin
 import falcon
 from passlib.hash import pbkdf2_sha256
 from sqlalchemy import Column, Date, DateTime, Enum, ForeignKey, Integer, Unicode, \
-    UnicodeText
+    UnicodeText, Float, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from sqlalchemy.orm import relationship
@@ -47,6 +47,17 @@ class GenereEnum(enum.Enum):
     male = "M"
     female = "F"
 
+class AnunciTypeEnum(enum.Enum):
+    doy = "D"
+    busco = "B"
+
+class AnunciLevelEnum(enum.Enum):
+    primaria = "P"
+    eso = "E"
+    batxillerat="B"
+    grau_mitja="M"
+    grau_superior="S"
+    universitat="U"
 
 class UserToken(SQLAlchemyBase):
     __tablename__ = "users_tokens"
@@ -73,6 +84,9 @@ class User(SQLAlchemyBase, JSONModel):
     phone = Column(Unicode(50))
     photo = Column(Unicode(255))
     zone = Column(Unicode(50), nullable=False)
+
+    anuncis_owner = relationship("Anunci", back_populates="owner", cascade="all, delete-orphan")
+
 
     @hybrid_property
     def public_profile(self):
@@ -117,6 +131,42 @@ class User(SQLAlchemyBase, JSONModel):
             "photo": self.photo,
             "zone":self.zone,
         }
+
+
+class Anunci(SQLAlchemyBase, JSONModel):
+    __tablename__ = "anuncis"
+
+    id = Column(Integer, primary_key=True)
+    title = Column(Unicode(250), nullable=False)
+    level = Column(Enum(AnunciLevelEnum), nullable=False)
+    description = Column(UnicodeText, nullable=False)
+    price = Column(Float, nullable=False)
+    admits_negotiation = Column(Boolean, default=False, nullable=False)
+    distance_to_serve = Column(Integer)
+    type = Column(Enum(AnunciTypeEnum), nullable=False)
+
+    owner_id = Column(Integer, ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
+    owner = relationship("User", back_populates="anuncis_owner")
+
+    @hybrid_property
+    def json_model(self):
+        return {
+            "id":self.id,
+            "title": self.title,
+            "description": self.description,
+            "level": self.level.value,
+            "price": self.price,
+            "type": self.type.value,
+        }
+
+    @hybrid_property
+    def min_json(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "price": self.price,
+        }
+
 
 # Aquestes relacions millor discutir al Sprint IV, pel III no calen...
 #Professors
