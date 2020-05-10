@@ -9,7 +9,7 @@ from sqlalchemy.sql import text
 
 import db
 import settings
-from db.models import SQLAlchemyBase, User, GenereEnum, UserToken
+from db.models import SQLAlchemyBase, User, GenereEnum, UserToken, Anunci, AnunciLevelEnum, AnunciTypeEnum
 from settings import DEFAULT_LANGUAGE
 
 # LOGGING
@@ -87,5 +87,32 @@ if __name__ == "__main__":
     db_session.add(user_admin)
     db_session.add(user_1)
     db_session.add(user_2)
+    db_session.commit()
+
+    # -------------------- CREATE ANUNCIS --------------------
+    mylogger.info("Creating default anuncis...")
+
+    anunci1 = Anunci(
+        title="Busco profe mates",
+        description="Busco profe mates per ...",
+        price=10.0,
+        distance_to_serve = 20,
+        level = AnunciLevelEnum.eso,
+        owner_id = 2,
+        type= AnunciTypeEnum.busco
+    )
+
+    anunci2 = Anunci(
+        title="Soc profe mates",
+        description="Soc profe de mates per ...",
+        price=10.0,
+        distance_to_serve=20,
+        level=AnunciLevelEnum.eso,
+        owner_id=3,
+        type=AnunciTypeEnum.doy
+    )
+
+    db_session.add(anunci1)
+    db_session.add(anunci2)
     db_session.commit()
     db_session.close()
