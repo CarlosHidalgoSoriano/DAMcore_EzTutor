@@ -7,7 +7,7 @@ import falcon
 
 import messages
 import middlewares
-from resources import account_resources, common_resources, user_resources
+from resources import account_resources, common_resources, user_resources, anunci_resources
 from settings import configure_logging
 
 # LOGGING
@@ -34,6 +34,9 @@ application.add_route("/", common_resources.ResourceHome())
 application.add_route("/account/profile", account_resources.ResourceAccountUserProfile())
 application.add_route("/account/create_token", account_resources.ResourceCreateUserToken())
 application.add_route("/account/delete_token", account_resources.ResourceDeleteUserToken())
+
+application.add_route("/anuncis/list", anunci_resources.ResourceGetAnuncis())
+application.add_route("/anuncis/show/{id}", anunci_resources.ResourceGetAnunci())
 
 application.add_route("/users/register", user_resources.ResourceRegisterUser())
 application.add_route("/users/show/{username}", user_resources.ResourceGetUserProfile())
