@@ -21,3 +21,17 @@ SchemaRegisterUser = {
     },
     "required": ["username", "password", "email", "name", "surname", "genere"]
 }
+
+SchemaCreateAnunci = {
+    "type": "object",
+    "properties": {
+        "title": {"type": "string"},
+        "description": {"type": "string"},
+        "price": {"type": "float"},
+        "level": {"type": "string"},
+        "admits_negotiation": {"type": "boolean"},
+        "distance_to_serve": {"type": "integer"},
+        "type": {"type": "string"},
+    },
+    "required": ["title", "description", "price", "level", "admits_negotiation", "distance_to_serve", "type"]
+}
