@@ -35,6 +35,7 @@ application.add_route("/account/profile", account_resources.ResourceAccountUserP
 application.add_route("/account/create_token", account_resources.ResourceCreateUserToken())
 application.add_route("/account/delete_token", account_resources.ResourceDeleteUserToken())
 
+application.add_route("/anuncis/create", anunci_resources.ResourceCreateAnunci())
 application.add_route("/anuncis/list", anunci_resources.ResourceGetAnuncis())
 application.add_route("/anuncis/show/{id}", anunci_resources.ResourceGetAnunci())
 
