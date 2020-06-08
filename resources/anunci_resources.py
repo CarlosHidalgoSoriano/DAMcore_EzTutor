@@ -8,16 +8,20 @@ from resources.base_resources import DAMCoreResource
 
 @falcon.before(requires_auth)
 class ResourceGetAnuncis(DAMCoreResource):
-    def on_get(self, req, resp, args, *kwargs):
+    def on_get(self, req, resp, *args, **kwargs):
         super(ResourceGetAnuncis, self).on_get(req, resp, args, *kwargs)
 
         current_user = req.context["auth_user"]
 
         response_anuncis = list()
 
+        request_type = req.get_param("type", False)
 
         aux_anuncis = self.db_session.query(Anunci)\
             .filter(Anunci.owner_id != current_user.id) # Codi MySQL
+
+        if request_type is not None:
+            aux_anuncis = self.db_session.query(Anunci).filter(Anunci.type == request_type)
 
 
 
@@ -30,7 +34,7 @@ class ResourceGetAnuncis(DAMCoreResource):
 
 @falcon.before(requires_auth)
 class ResourceGetAnunci(DAMCoreResource):
-    def on_get(self, req, resp, args, *kwargs):
+    def on_get(self, req, resp, *args, **kwargs):
         super(ResourceGetAnunci, self).on_get(req, resp, args, *kwargs)
 
         # IDEM USER
